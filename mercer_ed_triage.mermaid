@@ -1,0 +1,46 @@
+---
+title: Mercer General ED — Triage Workflow with AI Plug-in Points
+---
+flowchart TD
+    A([Patient Arrives]) --> B[Registration]
+    B --> C[Nurse Triage Assessment]
+    C --> D{ESI Level?}
+
+    AI1([🤖 AI Plug-in 1 — NLP triage support]):::ai
+    AI1 -. bias-audited ESI flag .-> C
+
+    D -->|ESI 1 — Immediate| E[Resuscitation Bay]
+    D -->|ESI 2-3 — Urgent| F[Acute Cubicle]
+    D -->|ESI 4-5 — Non-urgent| G[Fast-Track Area]
+
+    E --> H[Senior Physician]
+    F --> I[Nurse Re-assessment]
+    G --> J[Fast-Track MD]
+
+    AI2([🤖 AI Plug-in 2 — Deterioration monitor]):::ai
+    AI2 -. re-triage alert .-> G
+
+    I --> K[Physician H and P]
+    H --> L{Investigations?}
+    K --> L
+    J --> L
+
+    L -->|Yes| M[Labs and Imaging]:::bottle
+    L -->|No| N{Consultation?}
+    M --> N
+
+    N -->|Yes| O[Specialist Review]
+    N -->|No| P{Disposition}
+    O --> P
+
+    AI3([🤖 AI Plug-in 3 — Flow prediction]):::ai
+    AI3 -. bed management .-> P
+
+    P -->|Admit| Q[Ward Admission]:::bottle
+    P -->|Discharge| R[Discharge]
+    P -->|Transfer| S[Transfer]
+
+    Q & R & S --> T([Patient Exits])
+
+    classDef ai fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    classDef bottle fill:#FAEEDA,stroke:#854F0B,color:#412402
