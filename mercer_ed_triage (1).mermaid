@@ -1,0 +1,60 @@
+---
+title: Mercer General ED — Six-Step Triage Workflow with AI Plug-in Points
+---
+flowchart TD
+    A([Patient Arrives\nAmbulance · Walk-in · Private]) --> B
+
+    B["Step 1 — Handoff\nEMS SBAR to Registration Clerk\n2-3 min"] --> C
+
+    C["Step 2 — Handoff\nNurse Triage Assessment\n3-5 min | Nurse-led ESI 1-5"]
+
+    AI1(["🤖 AI Plug-in 1\nNLP chief complaint\nBias-audited ESI flag"]):::ai
+    AI1 -. IN: vitals + complaint\nOUT: ESI suggestion .-> C
+
+    C --> D{"Step 3 — Decision\nESI Level?"}
+
+    D -->|"ESI 1 — Immediate"| E["Resuscitation Bay\n2 bays | Senior physician leads"]
+    D -->|"ESI 2-3 — ≤10-30 min"| F["Acute Cubicles\n~12 monitored beds"]
+    D -->|"ESI 4-5 — ≤60 min"| G["Fast-Track Area\n~6 chairs"]
+
+    G --> W["Step 4 — Delay\nWaiting Room Re-check\nNurse visual scan at intervals"]
+
+    AI2(["🤖 AI Plug-in 2\nDeterioration monitor\nRe-triage alert"]):::ai
+    AI2 -. IN: wait time + ESI\nOUT: escalation flag .-> W
+    W -.->|"Re-triage"| D
+
+    E --> H["Senior Physician\nImmediate stabilisation"]
+    F --> I["Nurse Re-assessment\n5-10 min → Physician H&P\n15-30 min"]
+    W --> J["Fast-Track MD\n30-60 min"]
+
+    H --> M
+    I --> M
+
+    M["Step 5 — Delay | BOTTLENECK\nShared Lab and Radiology\n30 min – 3 hr"]:::bottle
+
+    AI3(["🤖 AI Plug-in 3\nQueue prediction\nWait time estimate"]):::ai
+    AI3 -. IN: orders + census\nOUT: turnaround estimate .-> M
+
+    J --> N
+    M --> N
+
+    N{"Consultation\nneeded?"}
+    N -->|Yes| O["Specialist Review\n30-60 min response"]
+    N -->|No| P
+    O --> P
+
+    P{"Step 6 — Decision and Handoff\nDisposition?"}
+
+    AI4(["🤖 AI Plug-in 4\nFlow and bed prediction\nBoarding estimate"]):::ai
+    AI4 -. IN: acuity + census\nOUT: bed availability .-> P
+
+    P -->|"Admit"| Q["Ward Admission\n⚠️ Boarding delay risk"]:::bottle
+    P -->|"Observe"| OBS["Short-Stay Obs Bay\n~4 beds | up to 24 hr"]:::mercer
+    P -->|"Discharge"| R["Discharge and Counselling\n5-10 min"]
+    P -->|"Transfer"| S["Transfer Arranged"]
+
+    Q & OBS & R & S --> T([Patient Exits])
+
+    classDef ai fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    classDef bottle fill:#FAEEDA,stroke:#854F0B,color:#412402
+    classDef mercer fill:#E1F5EE,stroke:#0F6E56,color:#04342C
